@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora de Índice de Prioridade (IP) - UFJ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --cor-principal: #134382;
+        --cor-secundaria: #f0f0f0;
+        --cor-branca: #ffffff;
+        --cor-texto: #333;
+        --cor-borda: #ccc;
+        --cor-sucesso: #28a745;
+      }
+
+      body {
+        font-family: "Roboto", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: var(--cor-secundaria);
+        color: var(--cor-texto);
+        display: flex;
+        justify-content: center;
+        align-items: flex-start; /* Alinha no topo */
+        min-height: 100vh;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      .container {
+        display: flex;
+        width: 100%;
+        max-width: 1200px;
+        background-color: var(--cor-branca);
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .left-panel,
+      .right-panel {
+        padding: 30px;
+        flex: 1;
+      }
+
+      .left-panel {
+        background-color: var(--cor-branca);
+        border-right: 1px solid var(--cor-borda);
+      }
+
+      .right-panel {
+        background-color: var(--cor-secundaria);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start; /* Alinha o conteúdo no topo */
+        align-items: center;
+        text-align: center;
+      }
+
+      h1,
+      h2 {
+        color: var(--cor-principal);
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+        text-align: left;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+
+      .form-group input {
+        width: calc(100% - 20px);
+        padding: 10px;
+        border: 1px solid var(--cor-borda);
+        border-radius: 5px;
+        font-size: 1rem;
+      }
+
+      #resultadoIP {
+        margin-top: 30px;
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--cor-principal);
+        min-height: 100px; /* Garante que o resultado tenha um espaço */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .explicacao-var h3 {
+        color: var(--cor-principal);
+        margin-top: 30px;
+        border-bottom: 2px solid var(--cor-principal);
+        padding-bottom: 5px;
+      }
+
+      .explicacao-var p {
+        margin-bottom: 10px;
+        line-height: 1.6;
+        text-align: justify;
+      }
+
+      .explicacao-var strong {
+        color: var(--cor-principal);
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+        }
+        .left-panel,
+        .right-panel {
+          border-right: none;
+          border-bottom: 1px solid var(--cor-borda);
+        }
+        .right-panel {
+          padding-top: 10px; /* Reduz o padding superior para não ficar muito espaço */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="left-panel">
+        <h1>Calculadora de Índice de Prioridade (IP)</h1>
+        <p>
+          Preencha os campos abaixo para calcular o seu Índice de Prioridade
+          (IP).
+        </p>
+        <form id="calculadoraIPForm">
+          <div class="form-group">
+            <label for="CHA">CHA (Carga horária aprovada):</label>
+            <input type="number" id="CHA" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label for="CHC">CHC (Carga horária cursada):</label>
+            <input type="number" id="CHC" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label for="CHI">CHI (Carga horária integralizada):</label>
+            <input type="number" id="CHI" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label for="CHT">CHT (Carga horária total do curso):</label>
+            <input type="number" id="CHT" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label for="QR">QR (Reprovações por faltas):</label>
+            <input type="number" id="QR" step="1" />
+          </div>
+        </form>
+      </div>
+
+      <div class="right-panel">
+        <h2>Resultado do IP</h2>
+        <div id="resultadoIP">—</div>
+
+        <div class="explicacao-var">
+          <h3>Glossário das Variáveis</h3>
+          <p>
+            <strong>CHA:</strong> Carga horária total de disciplinas nas quais o
+            discente foi aprovado nos dois últimos períodos cursados,
+            excetuando-se os períodos de verão ou inverno, trancamentos e
+            afastamentos por intercâmbios e disciplinas aproveitadas.
+          </p>
+          <p>
+            <strong>CHC:</strong> Carga horária total de disciplinas cursadas
+            pelo discente nos dois últimos períodos utilizados para cálculo da
+            CHA, excetuando-se disciplinas aproveitadas.
+          </p>
+          <p>
+            <strong>CHI:</strong> Carga horária integralizada em disciplinas do
+            Núcleo Comum (NC) e Núcleo Específico (NE), considerando NE ≤ 100%.
+          </p>
+          <p>
+            <strong>CHT:</strong> Carga horária total do curso em disciplinas do
+            Núcleo Comum (NC) e Núcleo Específico (NE).
+          </p>
+          <p>
+            <strong>QR:</strong> Número de reprovações por faltas nos mesmos
+            períodos utilizados para o cálculo da TA.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Seleciona todos os campos de input que participarão do cálculo
+      const inputs = document.querySelectorAll(
+        "#CHA, #CHC, #CHI, #CHT, #QR"
+      );
+      const resultadoDiv = document.getElementById("resultadoIP");
+
+      // Função que lê os valores, calcula e atualiza o resultado na tela
+      function calcularEAtualizarIP() {
+        // Pega os valores e converte para número, tratando campo vazio como NaN
+        const CHA = parseFloat(document.getElementById("CHA").value);
+        const CHC = parseFloat(document.getElementById("CHC").value);
+        const CHI = parseFloat(document.getElementById("CHI").value);
+        const CHT = parseFloat(document.getElementById("CHT").value);
+        const QR = parseInt(document.getElementById("QR").value);
+
+        // Verifica se todos os campos têm valores numéricos válidos
+        if (
+          isNaN(CHA) ||
+          isNaN(CHC) ||
+          isNaN(CHI) ||
+          isNaN(CHT) ||
+          isNaN(QR)
+        ) {
+          resultadoDiv.textContent = "—"; // Se algum campo estiver vazio, reseta o resultado
+          return; // Para a execução da função
+        }
+
+        let TA = 0;
+        if (CHC > 0) {
+          TA = CHA / CHC;
+        }
+
+        let TI = 0;
+        if (CHT > 0) {
+          TI = CHI / CHT;
+        }
+        if (TI > 1) {
+          TI = 1;
+        }
+
+        const IP = 100 * TA + 10 * TI - 3 * QR;
+
+        resultadoDiv.textContent = IP.toFixed(2); // Mostra o resultado com 2 casas decimais
+      }
+
+      // Adiciona o 'escutador' de evento 'input' para cada campo
+      inputs.forEach(function (input) {
+        input.addEventListener("input", calcularEAtualizarIP);
+      });
+    </script>
+  </body>
+</html>
